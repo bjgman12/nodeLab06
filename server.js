@@ -32,7 +32,7 @@ app.get('/', (request, response) => {
 
 app.get('/location', (request,response) => {
   let city = request.query.city;
-  let data = require('./data/location.json')[0];
+  let data = require('data/location.json')[0];
   let location = new Location(data,city);
   response.send(location);
 });
@@ -43,7 +43,7 @@ app.get('/location', (request,response) => {
 function Location(obj,query){
   this.lat = obj.lat;
   this.lon = obj.lon;
-  this.search = query;
+  this.search_query = query;
   this.location = obj.display.name;
 }
 
