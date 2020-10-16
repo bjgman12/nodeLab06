@@ -24,3 +24,20 @@ app.listen(PORT, () => {
   console.log(`server is now listening on ${PORT}`);
 });
 
+//Routes
+
+app.get('/location', (request,response) => {
+  let data = require('./data/location.json')[0];
+  let location = new Location(data,city);
+  response.send(location);
+});
+
+
+// Constructors
+
+function Location(obj,query){
+  this.lat = obj.lat;
+  this.lon = obj.lon;
+  this.search = query;
+  this.location = obj.display.name;
+}
