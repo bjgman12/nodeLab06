@@ -20,9 +20,6 @@ app.use(cors());
 
 //Start Server
 
-app.listen(PORT, () => {
-  console.log(`server is now listening on ${PORT}`);
-});
 
 //Routes
 
@@ -46,6 +43,10 @@ function Location(obj,query){
   this.search_query = query;
   this.location = obj.display.name;
 }
+
+app.listen(PORT, () => {
+  console.log(`server is now listening on ${PORT}`);
+});
 
 
 
