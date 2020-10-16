@@ -26,6 +26,10 @@ app.listen(PORT, () => {
 
 //Routes
 
+app.get('/', (request, response) => {
+  response.send('Default');
+});
+
 app.get('/location', (request,response) => {
   let city = request.query.city;
   let data = require('./data/location.json')[0];
