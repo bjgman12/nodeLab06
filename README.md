@@ -2,7 +2,7 @@
 
 **Author**: Brandon Gonzalez
 
-**Version** 1.0.2
+**Version** 1.1.0
 
 ## Overview
 
@@ -37,6 +37,36 @@ actual time 1hr
 - end time 10:00
 
 -actual time 30 minutes
+
+### Feature Location API refactor
+
+- esitimated tiem 1 hr
+
+- start time 0930
+
+- end time 1000
+
+-time actual 30 mins
+
+### Feature Weather API refactor
+
+-estimated time 1hr
+
+- start time 1000
+- end time 1100
+
+- time actual 1hr
+
+### Feature trail API add
+
+- estimated time 30 minutes
+
+-start time 1100
+
+-end time 1120
+
+-time actuall 20mins
+
 ## Getting Startded
 
 - Server init
@@ -46,6 +76,9 @@ actual time 1hr
 ##Archetecture
 
 ## Change Log
+ 
+ - refactored routes to use APIs and not the flat json files 1.1.0
 
+ - added trail route 1.1.0
 
 ## Credit and Colaborators
