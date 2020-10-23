@@ -21,6 +21,7 @@ CREATE TABLE weather (
 
 CREATE TABLE trails (
   id SERIAL PRIMARY KEY,
+  search_query VARCHAR(255),
   name VARCHAR(255),
   location VARCHAR(255),
   latitude FLOAT8,

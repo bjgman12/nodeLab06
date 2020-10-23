@@ -51,6 +51,7 @@ function locationHandler(req, res) {
   client.query(sqlCheck, [city])
     .then(result => {
       if (result.rowCount) {
+        console.log('cashed results used for location');
         res.status(200).json(result.rows[0]);
       } else {
         superagent.get(URL)
@@ -88,7 +89,7 @@ function weatherHandler(req, res) {
     .then(result => {
       if (result.rowCount) {
         res.status(200).json(result.rows);
-        console.log('Cached results used',result.rows);
+        console.log('Cached results used for weather');
       } else {
         superagent.get(URL)
           .then(data => {
@@ -118,20 +119,37 @@ function trailHandler(req, res) {
   let lat = req.query.latitude;
   let long = req.query.longitude;
   let key = process.env.TRAIL_API_KEY;
-
+  let city = req.query.search_query;
   const URL = `https://www.hikingproject.com/data/get-trails?lat=${lat}&lon=${long}&maxDistance=10&key=${key}`;
 
-  superagent.get(URL)
-    .then(data => {
-      let trailArr = data.body.trails.map(function (trail) {
-        let newTrail = new Trail(trail);
-        return newTrail;
-      });
-      res.status(200).json(trailArr);
-    })
-    .catch((error) => {
-      console.log('error', error);
-      res.status(500).send('Api call did not work');
+  const sqlCheck = `SELECT * FROM trails WHERE search_query=$1`;
+  client.query(sqlCheck, [city])
+    .then(result => {
+      if (result.rowCount) {
+        console.log('cached results used for trails');
+        res.status(200).json(result.rows);
+      } else {
+        superagent.get(URL)
+          .then(data => {
+            let trailArr = data.body.trails.map(function (trail) {
+              let newTrail = new Trail(trail);
+              newTrail.search_query = city;
+              return newTrail;
+            });
+            const sqlPlace = `INSERT INTO trails (search_query,name,location,length,stars,star_votes,sumarry,trail_url,conditions,condition_date,condition_time) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`;
+            trailArr.forEach(entry => {
+              client.query(sqlPlace, [entry.search_query, entry.name, entry.location, entry.length, entry.stars, entry.star_votes, entry.summary, entry.trail_url, entry.conditions, entry.condition_date, entry.condition_time])
+                .then(results => {
+                  console.log('Successfull trail cache');
+                });
+            });
+            res.status(200).json(trailArr);
+          })
+          .catch((error) => {
+            console.log('error', error);
+            res.status(500).send('Api call did not work');
+          });
+      }
     });
 }
 // Constructors

@@ -2,7 +2,7 @@
 
 **Author**: Brandon Gonzalez
 
-**Version** 1.2.0
+**Version** 1.2.1
 
 ## Overview
 
@@ -91,5 +91,7 @@ actual time 1hr
  - added trail route 1.1.0
 
  - added SQL DB and caching functionality for LOCATION and WEATHER 1.2.0
+
+ - Added SQL DB caching for TRAILS
 
 ## Credit and Colaborators
