@@ -9,7 +9,7 @@ require('dotenv').config();
 
 // Server listening port
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 // Start express
 
@@ -67,7 +67,6 @@ function locationHandler(req, res) {
                 console.log('error', error);
                 res.status(500).send('FUCK');
               });
-            res.status(200).json(location);
           })
           .catch((error) => {
             console.log('error', error);
@@ -82,18 +81,37 @@ function weatherHandler(req, res) {
   let key = process.env.WEATHER_API_KEY;
   const URL = `https://api.weatherbit.io/v2.0/forecast/daily?city=${city}&key=${key}`;
 
-  superagent.get(URL)
-    .then(data => {
-      let weatherArr = data.body.data.map(function (day) {
-        let weather = new Weather(day);
-        return weather;
-      });
-      weatherArr = weatherArr.slice(0, 8);
-      res.status(200).json(weatherArr);
-    })
-    .catch((error) => {
-      console.log('error', error);
-      res.status(500).send('API call did not work');
+  //create SQL code
+  const sqlCheck = `SELECT * FROM weather WHERE search_query=$1`;
+
+  client.query(sqlCheck, [city])
+    .then(result => {
+      if (result.rowCount) {
+        res.status(200).json(result.rows);
+        console.log('Cached results used',result.rows);
+      } else {
+        superagent.get(URL)
+          .then(data => {
+            let weatherArr = data.body.data.map(function (day) {
+              let weather = new Weather(day);
+              weather.search_query = city;
+              return weather;
+            });
+            weatherArr = weatherArr.slice(0, 8);
+            const sqlPlace = `INSERT INTO weather (search_query,forecast,time) VALUES ($1,$2,$3)`;
+            weatherArr.forEach(entry => {
+              client.query(sqlPlace, [entry.search_query, entry.forecast, entry.time])
+                .then(results => {
+                  console.log('Successfull Cache');
+                });
+            });
+            res.status(200).json(weatherArr);
+          })
+          .catch((error) => {
+            console.log('error', error);
+            res.status(500).send('API call did not work');
+          });
+      }
     });
 }
 function trailHandler(req, res) {
@@ -105,7 +123,6 @@ function trailHandler(req, res) {
 
   superagent.get(URL)
     .then(data => {
-      console.log(data.body);
       let trailArr = data.body.trails.map(function (trail) {
         let newTrail = new Trail(trail);
         return newTrail;
