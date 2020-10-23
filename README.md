@@ -2,7 +2,7 @@
 
 **Author**: Brandon Gonzalez
 
-**Version** 1.1.0
+**Version** 1.2.1
 
 ## Overview
 
@@ -67,6 +67,15 @@ actual time 1hr
 
 -time actuall 20mins
 
+### Feature SQL integration
+
+-estimated time 1 hour
+
+-start time 6:30
+
+-end time next day
+
+-time actual TOO long
 ## Getting Startded
 
 - Server init
@@ -80,5 +89,9 @@ actual time 1hr
  - refactored routes to use APIs and not the flat json files 1.1.0
 
  - added trail route 1.1.0
+
+ - added SQL DB and caching functionality for LOCATION and WEATHER 1.2.0
+
+ - Added SQL DB caching for TRAILS
 
 ## Credit and Colaborators
