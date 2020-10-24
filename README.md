@@ -2,7 +2,7 @@
 
 **Author**: Brandon Gonzalez
 
-**Version** 1.2.1
+**Version** 1.2.2
 
 ## Overview
 
@@ -76,6 +76,26 @@ actual time 1hr
 -end time next day
 
 -time actual TOO long
+
+### Feature Add Movie API
+
+- estimated time 30 minutes
+
+- start time 2:00
+
+- end time 2:30
+
+- actuall time 50 minutes
+
+### Feature Add Yelp API w pagination
+
+- esitmated time 1 hour
+
+- start time 3:30
+
+- end time 4:45
+
+-actual time 1 hour 15 minutes
 ## Getting Startded
 
 - Server init
@@ -93,5 +113,7 @@ actual time 1hr
  - added SQL DB and caching functionality for LOCATION and WEATHER 1.2.0
 
  - Added SQL DB caching for TRAILS
+
+ - ADDED movies and yelp api features 1.2.
 
 ## Credit and Colaborators

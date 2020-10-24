@@ -35,6 +35,8 @@ app.get('/bad', (request, response) => {
 app.get('/location', locationHandler);
 app.get('/weather', weatherHandler);
 app.get('/trails', trailHandler);
+app.get('/movies', movieHandler);
+app.get('/yelp', yelpHandler);
 // Route handlers
 
 function locationHandler(req, res) {
@@ -152,6 +154,44 @@ function trailHandler(req, res) {
       }
     });
 }
+
+function movieHandler(req, res) {
+  let city = req.query.search_query;
+  let key = process.env.MOVIE_API_KEY;
+
+  const URL = `https://api.themoviedb.org/3/search/movie?api_key=${key}&language=en-US&query=${city}&page=1&include_adult=false`;
+
+  superagent.get(URL)
+    .then(data => {
+      let movieArr = data.body.results.map(function (film) {
+        let movie = new Movies(film);
+        return movie;
+      });
+      movieArr = movieArr.slice(0, 20);
+      res.status(200).json(movieArr);
+    });
+}
+
+function yelpHandler(req, res) {
+  let city = req.query.search_query;
+  let key = process.env.YELP_API_KEY;
+  let pageDef = req.query.page;
+  let offset = (pageDef - 1) * 5;
+  const URL = `https://api.yelp.com/v3/businesses/search?location=${city}&term=restaurants&limit=5&offset=${offset}`;
+
+  superagent.get(URL)
+    .set('Authorization',`Bearer ${key}` )
+    .then(data => {
+      let yelpArr = data.body.businesses.map( function (spot) {
+        let yelpNew = new Yelp(spot);
+        return yelpNew;
+      });
+      res.status(200).json(yelpArr);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
 // Constructors
 
 function Location(city, locationData) {
@@ -179,6 +219,24 @@ function Trail(obj) {
   this.condition_date = obj.conditionDate.slice(0, 10);
   this.condition_time = obj.conditionDate.slice(10, obj.conditionDate.length);
 }
+function Movies(obj) {
+  this.title = obj.title;
+  this.overview = obj.overview;
+  this.average_votes = obj.vote_average;
+  this.total_votes = obj.vote_count;
+  this.image_url = `https://image.tmdb.org/t/p/w500${obj.poster_path}`;
+  this.popularity = obj.popularity;
+  this.released_on = obj.release_date;
+}
+
+function Yelp(obj) {
+  this.name = obj.name;
+  this.image_url = obj.image_url;
+  this.price = obj.price;
+  this.rating = obj.rating;
+  this.url = obj.url
+}
+
 
 
 //Starting Server
